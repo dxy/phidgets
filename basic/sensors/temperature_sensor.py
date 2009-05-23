@@ -3,6 +3,18 @@
 from sensor import *
 
 class TemperatureSensor(Sensor):
+  """Phidgets 1125 Temperature Sensor.
+
+  cf. http://www.phidgets.com/documentation/Phidgets/1125.pdf
+
+  Attributes:
+    value: temperature calculated from raw sensor value.
+    max: maximum value the sensor measures.
+    min: minimum value the sensor measures.
+    label: a string used as a filename for saving data.
+    product_name: a string containing product name.
+    product_number: a string containing product #.
+  """
   def __init__(self):
     self.value = 0
     self.max = 100
@@ -12,20 +24,5 @@ class TemperatureSensor(Sensor):
     self.product_number = '1125'
 
   def SetValue(self, value):
-    """Setter for value property.
-
-    Args:
-      value:
-        The measured value with the sensor.
-
-    Exceptions:
-      
-    """
-    # cf. 1125.pdf
     self.value = ((value * 222.22 ) / 1000) - 61.11
-
-  def GetValue(self):
-    return self.value
-
-  #value = property(GetValue, SetValue)
 
