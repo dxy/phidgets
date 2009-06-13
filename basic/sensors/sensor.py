@@ -51,7 +51,7 @@ class Sensor(object):
     """
     self.__value = value
 
-  value = property(__GetValue, __SetValue)
+  value = property(__GetValue, __SetValue, doc='value calulated from sensor')
 
   def __GetMax(self):
     "Getter for 'max' property."
@@ -66,7 +66,7 @@ class Sensor(object):
     """
     self.__max = max
 
-  max = property(__GetMax, __SetMax)
+  max = property(__GetMax, __SetMax, doc='maximum sensor value')
 
   def __GetMin(self):
     "Getter for 'min' property."
@@ -81,7 +81,7 @@ class Sensor(object):
     """
     self.__min = min
 
-  min = property(__GetMin, __SetMin)
+  min = property(__GetMin, __SetMin, doc='minimum sensor value')
 
   def __GetLabel(self):
     "Getter for 'label' property."
@@ -96,7 +96,7 @@ class Sensor(object):
     """
     self.__label = label
 
-  label = property(__GetLabel, __SetLabel)
+  label = property(__GetLabel, __SetLabel, doc='label of sensor name')
 
   def __GetProductName(self):
     "Getter for 'product_name' property."
@@ -111,7 +111,8 @@ class Sensor(object):
     """
     self.__product_name = product_name
 
-  product_name = property(__GetProductName, __SetProductName)
+  product_name = property(__GetProductName, __SetProductName,
+                          doc='sensor product name')
 
   def __GetProductNumber(self):
     "Getter for 'product_number' property."
@@ -126,5 +127,6 @@ class Sensor(object):
     """
     self.__product_number = product_number
 
-  product_number = property(__GetProductNumber, __SetProductNumber)
+  product_number = property(__GetProductNumber, __SetProductNumber,
+                            doc='sensor product number')
 
