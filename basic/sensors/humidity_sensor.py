@@ -16,13 +16,21 @@ class HumiditySensor(Sensor):
     product_number: a string containing product #.
   """
   def __init__(self):
-    self.value = 0
-    self.max = 95 
-    self.min = 10
-    self.label = 'humidity'
-    self.product_name = 'Humidity Sensor'
-    self.product_number = '1125'
+    Sensor.__init__(self)
+    self.__max = 95
+    self.__min = 10
+    self.__label = 'humidity'
+    self.__product_name = 'Humidity Sensor'
+    self.__product_number = '1125'
 
-  def SetValue(self, value):
-    self.value = ((value * 190.6 ) / 1000) - 40.2
+  def __GetValue(self):
+    return self.__value
 
+  def __SetValue(self, value):
+    self.__value = ((value * 190.6 ) / 1000) - 40.2
+
+  def __GetLabel(self):
+    return self.__label
+
+  value = property(__GetValue, __SetValue)
+  label = property(__GetLabel)

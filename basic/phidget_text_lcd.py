@@ -16,6 +16,7 @@ __author__ = 'dxy@acm.org (Daisuke Yabuki)'
 
 import datetime
 import os
+import sys
 import time
 from Phidgets.PhidgetException import *
 from Phidgets.Events.Events import *
@@ -62,7 +63,7 @@ class PhidgetTextLCD(object):
       for sensor in self.sensors:
         #print sensor.product_name
         #print sensor.value
-        sensor.SetValue(self.interfaceKit.getSensorValue(i))
+        sensor.value = self.interfaceKit.getSensorValue(i)
         i += 1
 
       self.interfaceKit.setOnSensorChangeHandler(self.SensorChanged)
@@ -76,12 +77,12 @@ class PhidgetTextLCD(object):
 
     except PhidgetException, e:
       print "Phidget Exception %i: %s" % (e.code, e.message)
-      exit(1)
+      sys.exit(1)
 
   def SensorChanged(self, e):
     """A call back method called when a value changes."""
     sensor = self.sensors[e.index]
-    sensor.SetValue(e.value)
+    sensor.value = e.value
     # TODO(dxy): maybe update LCD
 
   def Factory(self, klass, *args):
@@ -92,7 +93,7 @@ class PhidgetTextLCD(object):
       return anObject
     except:
       print "failed to instantiate a sensor class " + klass.__name__
-      exit(1)
+      sys.exit(1)
 
   def Poll(self):
     """A loop to update time on LCD and save data to files."""
@@ -112,7 +113,7 @@ class PhidgetTextLCD(object):
       data_file_path = os.path.join(self.data_dir, sensor.label)
       try:
         data_file = open(data_file_path, 'w')
-        data_file.write("%f\n" % sensor.GetValue())
+        data_file.write("%f\n" % sensor.value)
         data_file.close()
-      except IOError:
-        print "failed to write data"
+      except IOError, e:
+        print "failed to write data %s" % e

@@ -10,6 +10,7 @@ and stores it to files so that it can be uploaded to pachube by another script.
 
 __author__ = 'dxy@acm.org (Daisuke Yabuki)'
 
+#import settings
 from phidget_text_lcd import *
 
 # A directory to save sensor reading data.

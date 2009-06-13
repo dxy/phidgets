@@ -17,13 +17,21 @@ class PrecisionLightSensor(Sensor):
   """
 
   def __init__(self):
-    self.value = 0
-    #self.max = 0
-    #self.min = 0
-    self.label = 'luminosity'
-    self.product_name = 'Precision Light Sensor'
-    self.product_number = '1127'
+    Sensor.__init__(self)
+    #self.__max = 0
+    #self.__min = 0
+    self.__label = 'luminosity'
+    self.__product_name = 'Precision Light Sensor'
+    self.__product_number = '1127'
 
-  def SetValue(self, value):
-    self.value = value
+  def __GetValue(self):
+    return self.__value
 
+  def __SetValue(self, value):
+    self.__value = value
+
+  def __GetLabel(self):
+    return self.__label
+
+  value = property(__GetValue, __SetValue)
+  label = property(__GetLabel)

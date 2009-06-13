@@ -16,13 +16,21 @@ class TemperatureSensor(Sensor):
     product_number: a string containing product #.
   """
   def __init__(self):
-    self.value = 0
-    self.max = 100
-    self.min = -40
-    self.label = 'temperature'
-    self.product_name = 'Temperature Sensor'
-    self.product_number = '1125'
+    Sensor.__init__(self)
+    self.__max = 100
+    self.__min = -40
+    self.__label = 'temperature'
+    self.__product_name = 'Temperature Sensor'
+    self.__product_number = '1125'
 
-  def SetValue(self, value):
-    self.value = ((value * 222.22 ) / 1000) - 61.11
+  def __GetValue(self):
+    return self.__value
 
+  def __SetValue(self, value):
+    self.__value = ((value * 222.22 ) / 1000) - 61.11
+
+  def __GetLabel(self):
+    return self.__label
+
+  value = property(__GetValue, __SetValue)
+  label = property(__GetLabel)
