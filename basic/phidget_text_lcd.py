@@ -40,80 +40,91 @@ class PhidgetTextLCD(object):
 
   def __init__(self, analog_sensors, data_dir):
     """Initializes the members."""
-    self.interfaceKit = InterfaceKit()
-    self.textLCD = TextLCD()
+    self.__interfaceKit = InterfaceKit()
+    self.__textLCD = TextLCD()
 
-    self.data_dir = data_dir
+    self.__data_dir = data_dir
 
     # instantiate classes according to actual sensor port configuration
     self.sensors = []
     for sensor in analog_sensors:
-      aSensor = self.Factory(sensor)
-      self.sensors.append(aSensor)
+      a_sensor = self.__Factory(sensor)
+      self.sensors.append(a_sensor)
 
     try:
       # Interface Kit
-      self.interfaceKit.openPhidget()
-      self.interfaceKit.waitForAttach(10000)
+      self.__interfaceKit.openPhidget()
+      self.__interfaceKit.waitForAttach(10000)
       print "%s (serial: %d) attached!" % (
-        self.interfaceKit.getDeviceName(), self.interfaceKit.getSerialNum())
+        self.__interfaceKit.getDeviceName(), self.__interfaceKit.getSerialNum())
 
       # get initial value from each sensor
       i = 0
       for sensor in self.sensors:
         #print sensor.product_name
         #print sensor.value
-        sensor.value = self.interfaceKit.getSensorValue(i)
+        sensor.value = self.__interfaceKit.getSensorValue(i)
         i += 1
 
-      self.interfaceKit.setOnSensorChangeHandler(self.SensorChanged)
+      self.__interfaceKit.setOnSensorChangeHandler(self.__SensorChanged)
 
       # Text LCD
-      self.textLCD.openPhidget()
-      self.textLCD.waitForAttach(10000)
-      print "%s attached!" % (self.textLCD.getDeviceName())
+      self.__textLCD.openPhidget()
+      self.__textLCD.waitForAttach(10000)
+      print "%s attached!" % (self.__textLCD.getDeviceName())
 
-      self.textLCD.setCursorBlink(False)
+      self.__textLCD.setCursorBlink(False)
 
     except PhidgetException, e:
       print "Phidget Exception %i: %s" % (e.code, e.message)
       sys.exit(1)
 
-  def SensorChanged(self, e):
-    """A call back method called when a value changes."""
+  def __SensorChanged(self, e):
+    """A call back method called when a value changes.
+
+    Args:
+      e: An event raised.
+    """
     sensor = self.sensors[e.index]
     sensor.value = e.value
     # TODO(dxy): maybe update LCD
 
-  def Factory(self, klass, *args):
-    """A factory to instantiate an object for a given Sensor class."""
+  def __Factory(self, klass, *args):
+    """A factory to instantiate an object for a given Sensor class.
+
+    Args:
+      klass: A class object to be instantiated.
+    Returns:
+      An sensor object which is just instantiated.
+    """
     try:
-      anObject = apply(klass, args)
+      an_object = apply(klass, args)
       #print klass.__name__ + " instantiated"
-      return anObject
+      return an_object
     except:
       print "failed to instantiate a sensor class " + klass.__name__
       sys.exit(1)
 
-  def Poll(self):
-    """A loop to update time on LCD and save data to files."""
-    while 1:
-      now = datetime.datetime.today()
-      self.textLCD.setDisplayString(0, now.strftime("%Y/%m/%d %H:%M:%S"))
-      second = int(now.strftime("%S"))
-      if second % 15 == 0:
-        self.SaveValues()
-      time.sleep(1)
-
-  def SaveValues(self):
+  def __SaveValues(self):
     """Save value for each sensor in the sensors list to a file."""
     for sensor in self.sensors:
       if sensor.__class__ == BlankSensor:
         continue
-      data_file_path = os.path.join(self.data_dir, sensor.label)
+      data_file_path = os.path.join(self.__data_dir, sensor.label)
       try:
         data_file = open(data_file_path, 'w')
         data_file.write("%f\n" % sensor.value)
         data_file.close()
       except IOError, e:
         print "failed to write data %s" % e
+
+  def Poll(self):
+    """A loop to update time on LCD and save data to files."""
+    while 1:
+      now = datetime.datetime.today()
+      self.__textLCD.setDisplayString(0, now.strftime("%Y/%m/%d %H:%M:%S"))
+      second = int(now.strftime("%S"))
+      if second % 15 == 0:
+        self.__SaveValues()
+      time.sleep(1)
+
