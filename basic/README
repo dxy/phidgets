@@ -2,3 +2,45 @@ Download Phidgets Python modules from
 http://www.phidgets.com/downloads.php?example_id=31
 and extract Phidgets/ in this directory.
 
+monitor.py saves sensor reading into files and 
+the following script can upload those data to pachube.
+
+-- update-pachube.py --
+#!/usr/bin/python
+
+import os
+import subprocess
+
+# values to export to pachube
+# they should match a 'label' attribute of one of Sensor subclasses
+feeds = ['temperature', 'humidity']
+
+# A directory to save sensor reading data.
+data_dir_path = '/Users/dxy/Documents/phidgets/data/'
+
+api_key = "PUT_YOUR_API_KEY_HERE"
+
+def main():
+  data = ''
+  for feed in feeds:
+    data_file_path = os.path.join(data_dir_path, feed)
+    f = file(data_file_path)
+    try:
+      line = f.read()
+    except IOError:
+      print "failed to read data"
+      exit(1)
+    data = data + line.strip() + ","
+    f.close()
+  # strip the trailing comma
+  data = data[:-1]
+
+  cmd = ('/usr/bin/curl -s --request PUT --header "X-PachubeApiKey: %s"'
+         ' --data "%s" http://www.pachube.com/api/1967.csv' % (api_key, data))
+  #print cmd
+  p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).communicate()[0]
+
+if __name__ == '__main__':
+  main()
+-- update-pachube.py --
+
